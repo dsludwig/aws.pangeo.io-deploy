@@ -41,7 +41,7 @@ jobs:
       - run:
           name: Authenticate to AWS
           command: |
-            eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+            eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email | sed 's|https://||')
 
       # - run:
       #     name: Authenticate to Google
