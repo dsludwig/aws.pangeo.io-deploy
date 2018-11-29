@@ -2,7 +2,7 @@ version: 2
 jobs:
   deploy:
     docker:
-      - image: buildpack-deps:bionic-scm
+      - image: circleci/buildpack-deps:bionic-scm
     working_directory: ~/repo
 
     steps:
