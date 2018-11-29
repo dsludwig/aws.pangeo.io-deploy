@@ -39,23 +39,25 @@ jobs:
       - setup_remote_docker
 
       - run:
-          name: Authenticate to Google
+          name: Authenticate to AWS
           command: |
-            echo ${GCR_READWRITE_KEY} > ${HOME}/gcloud-service-key.json
-            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
-            rm ${HOME}/gcloud-service-key.json
-            gcloud --quiet config set project ${GOOGLE_PROJECT}
-            gcloud --quiet config set compute/zone ${GOOGLE_ZONE}
-            gcloud --quiet beta container clusters get-credentials ${GKE_CLUSTER} --zone=${GOOGLE_ZONE}
+            eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+
+      # - run:
+      #     name: Authenticate to Google
+      #     command: |
+      #       echo ${GCR_READWRITE_KEY} > ${HOME}/gcloud-service-key.json
+      #       gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+      #       rm ${HOME}/gcloud-service-key.json
+      #       gcloud --quiet config set project ${GOOGLE_PROJECT}
+      #       gcloud --quiet config set compute/zone ${GOOGLE_ZONE}
+      #       gcloud --quiet beta container clusters get-credentials ${GKE_CLUSTER} --zone=${GOOGLE_ZONE}
 
       - run:
           name: Build primary image if needed
           command: |
             hubploy-image-builder \
               --push \
-              --registry-url https://us.gcr.io \
-              --registry-username _json_key \
-              --registry-password "${GCR_READWRITE_KEY}" \
               --repo2docker \
               deployments/${DEPLOYMENT}/image/ ${IMAGE_NAME}
           environment:
